@@ -58,9 +58,33 @@
           (describe-paths *location* *edges*)
           (describe-objects *location* *objects* *object-locations*)))
 ; > (look)
-; YOU ARE IN THE LIVING-ROOM OF A WIZARD 'S HOUSE.
+; (YOU ARE IN THE LIVING-ROOM OF A WIZARD 'S HOUSE.
 ; A WIZARD IS SNORING LOUDLY ON THE COUCH.
 ; THERE IS A DOOR GOING WEST FROM HERE.
 ; THERE IS A LADDER GOING UPSTAIRS FROM HERE.
 ; YOU SEE A WHISKEY ON THE FLOOR.
-; YOU SEE A BUCKET ON THE FLOOR.
+; YOU SEE A BUCKET ON THE FLOOR.)
+
+(defun walk (direction)
+  (let ((next (find direction
+                    (cdr (assoc *location* *edges*))
+                    :key #'cadr)))
+    (if next
+      (progn (setf *location* (car next))
+             (look))
+      '(you cannot go that way.))))
+; > (walk 'west)
+; (YOU ARE IN A BEAUTIFUL GARDEN.
+; THERE IS A WELL IN FRONT OF YOU.
+; THERE IS A DOOR GOING EAST FROM HERE.
+; YOU SEE A FROG ON THE FLOOR.
+; YOU SEE A CHAIN ON THE FLOOR.)
+
+(defun pickup (object)
+  (cond ((member object
+                 (objects-at *location* *objects* *object-locations*))
+         (push (list object 'body) *object-locations*)
+         `(you are now carrying the ,object))
+        (t '(you cannot get that.))))
+; > (pickup 'whiskey )
+; (YOU ARE NOW CARRYING THE WHISKEY)
