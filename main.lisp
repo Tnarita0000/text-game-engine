@@ -88,3 +88,8 @@
         (t '(you cannot get that.))))
 ; > (pickup 'whiskey )
 ; (YOU ARE NOW CARRYING THE WHISKEY)
+
+(defun inventory ()
+  (cons 'items- (objects-at 'body *objects* *object-locations*)))
+; > (inventory)
+; (ITEMS- WHISKEY)
