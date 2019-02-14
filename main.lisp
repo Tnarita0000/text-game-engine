@@ -1,3 +1,10 @@
+;-----------------------
+(let (title)
+  (setq title  '(land of lisp))
+  (print title)
+  (fresh-line))
+;-----------------------
+
 (defparameter *nodes* '((living-room (you are in the living-room.
                                           a wizard is snoring loudly on the couch.))
                         (garden (you are in a beautiful garden.
@@ -21,3 +28,21 @@
 (defun describe-paths (location edges)
   (apply #'append (mapcar #'describe-path (cdr (assoc location edges)))))
 ; ex> (describe-paths 'living-room *edges*)
+
+(defparameter *objects* '(whiskey bucket frog chain))
+
+(defparameter *object-locations* '((whiskey living-room)
+                                   (bucket living-room)
+                                   (chain garden)
+                                   (frog garden)))
+(defun objects-at (loc objs obj-locs)
+  (labels ((at-loc-p (obj)
+	     (eq (cadr (assoc obj obj-locs)) loc)))
+    (remove-if-not #'at-loc-p objs)))
+; ex> (objects-at 'living-room *objects* *object-locations* )
+; (WHISKEY BUCKET)
+
+(defun describe-objects (loc objs obj-loc)
+  (labels ((describe-obj (obj)
+                         `(you see a ,obj on the floor.)))
+    (apply #'append (mapcar #'describe-obj (objects-at loc objs obj-loc)))))
